@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <title>Healthcare bot</title>
+  <link href="style.css" rel="stylesheet" />
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+  <script src="https://cdn.botframework.com/botframework-webchat/4.14.0/webchat.js"></script>
+  <style>
+    body {
+      <!-- margin: 0; -->
+      padding: 0;
+      box-sizing: border-box;
+      margin-left:30%;
+      margin-right:30%;
+      text-align: center;
+      background: #F1F6F9;
+      height: 100vh;
+
+
+    }
+
+    .container {
+      /* height: 100vh; */
+      margin-top: 100px;
+      height: 90%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .first-div {
+      background-color: #19A7CE;
+      color: #ffffff;
+      padding:10px;
+      font-size: 1em;
+      font-weight: bold;
+      <!-- margin-left:30%; -->
+      <!-- margin-right:30%; -->
+
+    }
+
+    .second-div {
+      height: 85%;
+      background-color: #eee;
+      <!-- margin-left:30%; -->
+      <!-- margin-right:30%; -->
+    }
+
+    /* Adjustments for tablets and smartphones */
+    @media only screen and (max-width: 768px) {
+      body{
+        margin: 0;
+      }
+    }
+      .first-div {
+        padding: 10px;
+        font-size: 0.8em;      }
+
+      .second-div {
+        height: 100%;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+  <!-- <div class="container">
+    <div id="header">
+        <h1>Chatbot</h1>
+    </div>
+    <div class="right">
+      <div id="webchat" role="main" watermark="false"></div>
+
+    </div> -->
+  <div class="container">
+    <div class="first-div">
+      <!-- content of the first div -->
+      <h1>Adele</h1>
+    </div>
+    <div class="second-div">
+      <!-- content of the second div -->
+      <div id="webchat" role="main" watermark="false"></div>
+    </div>
+  </div>
+
+
+
+  <script>
+    (async function() {
+
+      // Note, for the simplicity of this example, we are fetching the DirectLine token here;
+      // however, it is recommended that you create a backend REST API to generate and manage
+      // your tokens.
+      const res = await fetch('https://directline.botframework.com/v3/directline/tokens/generate', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer rIsqTYAGHiM.Xw1VaYiYz5OJ8KWA9X5i5CGA8qCHxmkeLhE5kAFr0W4',
+          'Content-Type': 'application/json'
+        },
+        body: {
+          // The user id must start with `dl` and should be unique for each user.
+          User: {
+            Id: "dl_user_id"
+          },
+        },
+      });
+      const {
+        token
+      } = await res.json();
+
+
+      const styleSet = window.WebChat.createStyleSet({
+        // bubbleBackground: 'rgba(0, 0, 255, .1)',
+        bubbleBackground: '#AFD3E2',
+        // bubbleFromUserBackground: 'rgba(0, 255, 0, .1)',
+        bubbleFromUserBackground: '#AFD3E2',
+
+        // rootHeight: '100%',
+        // rootWidth: '100%',
+        // backgroundColor: 'paleturquoise',
+        backgroundColor: '#f5f5f5',
+
+      });
+
+      styleSet.textContent = {
+        ...styleSet.textContent,
+        // fontFamily: "'Comic Sans MS', 'Arial', sans-serif",
+        fontFamily: "'Helvetica', sans-serif",
+        fontWeight: 'bold'
+      };
+
+      const avatarOptions = {
+        botAvatarImage: 'https://tse2.mm.bing.net/th?id=OIP._aE7nW2I8lqdlokB0xkhagHaFj&pid=Api&P=0',
+        botAvatarInitials: 'A',
+        // userAvatarImage: '<URL to your user avatar image>',
+        userAvatarInitials: ''
+      };
+
+      const directL = window.WebChat.createDirectLine({
+        token
+      });
+
+      directL.activity$.subscribe(activity => {
+        var triggerGender = activity.text
+        console.log('Received activity:', activity.text);
+
+        console.log('Received activity:', activity.value);
+
+
+        if (triggerGender == "M") {
+          // document.body.style.backgroundColor = 'blue';
+          document.getElementById("webchat").style.backgroundColor = "blue";
+
+        }
+        if (triggerGender == "female") {
+          // document.body.style.backgroundColor = 'pink';
+          document.getElementById("webchat").style.backgroundColor = "pink";
+        }
+
+        if (triggerGender.includes("Self-Care")) {
+          document.getElementById("webchat").style.backgroundColor = "yellow";
+        }
+        //       else if(triggerGender.includes("Ambulance")){
+        //         document.body.style.backgroundColor = 'red';
+        // }
+
+
+
+
+      });
+
+      window.WebChat.renderWebChat({
+          directLine: window.WebChat.createDirectLine({
+            token
+          }),
+          styleSet,
+          styleOptions: avatarOptions,
+          webSpeechPonyfillFactory: window.WebChat.createBrowserWebSpeechPonyfillFactory({
+            token
+          }),
+
+        },
+        document.getElementById("webchat")
+      );
+    })().catch((err) => console.log(err));
+  </script>
+  <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+</body>
+
+</html>
