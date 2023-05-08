@@ -6,6 +6,9 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.botframework.com/botframework-webchat/4.14.0/webchat.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700;900&family=Nunito+Sans&family=Ubuntu:wght@300;700&display=swap" rel="stylesheet">
   <style>
   *{
     margin:0px;
@@ -15,38 +18,53 @@
   }
 
   #webchat > div > :nth-child(3){
-    overflow-y: scroll !important;
+    <!-- overflow-y: scroll !important; -->
     padding: 10px;
-
+    font-size: 16px;
   }
 
+  body {
+    padding: 0;
+    background: #F1F6F9;
+  }
 
-    body {
-      padding: 0;
-
-      /* margin-left:30%; */
-      /* margin-right:30%; */
-      /* text-align: center; */
-      background: #F1F6F9;
-    }
-
-    .container {
-      /* height: 100vh; */
-      width: 50%;
-      margin: auto;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background: #f5f5f5;
-    }
+  .container {
+    width: 50%;
+    margin: auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #FDFBFB;
+  }
 
     .first-div {
-      background-color: #19A7CE;
-      color: #ffffff;
+      display: flex;
+      background-color: #D09CA0;
+      color: black;
       padding:10px;
       font-size: 1em;
       font-weight: bold;
+      font-family: 'Nunito Sans', sans-serif;
+    }
+
+    .flex-auto {
+      display: flex;
+      flex: auto;
+    }
+
+    .flex-auto h1 {
+      padding-top: 5px;
+      padding-left: 5px;
+    }
+    .first-div img {
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
+    }
+
+    .font-control {
+      padding-top: 10px;
     }
     .second-div {
       background-color: #eee;
@@ -64,18 +82,18 @@
 </head>
 
 <body>
-  <!-- <div class="container">
-    <div id="header">
-        <h1>Chatbot</h1>
-    </div>
-    <div class="right">
-      <div id="webchat" role="main" watermark="false"></div>
 
-    </div> -->
   <div class="container">
     <div class="first-div">
+      <div class="flex-auto">
+        <img src="chatbot.png" alt="">
+        <h1>Adele</h1>
+      </div>
       <!-- content of the first div -->
-      <h1>Adele</h1>
+      <div class="font-control">
+        <button id="font-down">A-</button>
+        <button id="font-up">A+</button>
+      </div>
     </div>
     <div class="second-div">
       <!-- content of the second div -->
@@ -110,30 +128,31 @@
 
 
       const styleSet = window.WebChat.createStyleSet({
-        // bubbleBackground: 'rgba(0, 0, 255, .1)',
-        bubbleBackground: '#AFD3E2',
-        // bubbleFromUserBackground: 'rgba(0, 255, 0, .1)',
-        bubbleFromUserBackground: '#AFD3E2',
 
-        // rootHeight: '100%',
-        // rootWidth: '100%',
-        // backgroundColor: 'paleturquoise',
-        backgroundColor: '#f5f5f5',
+        bubbleBackground: '#D09CA0',
+        bubbleFromUserBackground: '#B48286',
+        backgroundColor: '#FDFBFB',
+
 
       });
 
       styleSet.textContent = {
         ...styleSet.textContent,
         // fontFamily: "'Comic Sans MS', 'Arial', sans-serif",
-        fontFamily: "'Helvetica', sans-serif",
-        fontWeight: 'bold'
+        fontFamily: "'Nunito Sans', sans-serif",
+        // fontWeight: 'bold',
+
+
+
+
       };
 
       const avatarOptions = {
-        botAvatarImage: 'https://tse2.mm.bing.net/th?id=OIP._aE7nW2I8lqdlokB0xkhagHaFj&pid=Api&P=0',
+        botAvatarImage: 'chatbot.png',
         botAvatarInitials: 'A',
         // userAvatarImage: '<URL to your user avatar image>',
-        userAvatarInitials: 'You'
+        userAvatarInitials: 'You',
+
       };
 
       const directL = window.WebChat.createDirectLine({
@@ -145,29 +164,25 @@
         console.log('Received activity:', activity.text);
 
         console.log('Received activity:', activity.value);
-
-
-        if (triggerGender == "M") {
-          // document.body.style.backgroundColor = 'blue';
-          document.getElementById("webchat").style.backgroundColor = "blue";
-
-        }
-        if (triggerGender == "female") {
-          // document.body.style.backgroundColor = 'pink';
-          document.getElementById("webchat").style.backgroundColor = "pink";
-        }
-
-        if (triggerGender.includes("Self-Care")) {
-          document.getElementById("webchat").style.backgroundColor = "yellow";
-        }
-        //       else if(triggerGender.includes("Ambulance")){
-        //         document.body.style.backgroundColor = 'red';
-        // }
-
-
-
-
       });
+
+      function increaseFontSize() {
+      var div = document.querySelector('#webchat > div > :nth-child(3)');
+      var fontSize = window.getComputedStyle(div, null).getPropertyValue('font-size');
+      var currentFontSize = parseFloat(fontSize);
+      div.style.fontSize = (currentFontSize + 1) + 'px';
+      }
+
+      function decreaseFontSize() {
+      var div = document.querySelector('#webchat > div > :nth-child(3)');
+      var fontSize = window.getComputedStyle(div, null).getPropertyValue('font-size');
+      var currentFontSize = parseFloat(fontSize);
+      div.style.fontSize = (currentFontSize - 1) + 'px';
+      }
+
+      document.getElementById('font-up').addEventListener('click', increaseFontSize);
+      document.getElementById('font-down').addEventListener('click', decreaseFontSize);
+
 
       window.WebChat.renderWebChat({
           directLine: window.WebChat.createDirectLine({
